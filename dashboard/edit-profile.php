@@ -45,7 +45,7 @@ include '../header.php';
                     $stmt->execute();
                     $stmt->close();
 
-                    header('Location: profile.php');
+                    echo '<meta http-equiv="refresh" content="0; URL=/profile.php">';
                     exit();
                 } else {
                     $_SESSION['error'] = 'Password is incorrect';

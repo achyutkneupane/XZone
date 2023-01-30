@@ -3,7 +3,7 @@
 include 'header.php';
 
 if (isset($_SESSION['user'])) {
-    header('Location: index.php');
+    echo '<meta http-equiv="refresh" content="0; URL=/">';
 }
 ?>
 
@@ -20,7 +20,7 @@ if (isset($_POST['register'])) {
         die("Error inserting data: " . mysqli_error($conn));
     } else {
         $_SESSION['success'] = 'User registered successfully';
-        header('Location: login.php');
+        echo '<meta http-equiv="refresh" content="0; URL=/login.php">';
         exit();
     }
 }

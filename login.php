@@ -3,7 +3,7 @@
 include 'header.php';
 
 if (isset($_SESSION['user'])) {
-    header('Location: /');
+    echo '<meta http-equiv="refresh" content="0; URL=/">';
 }
 ?>
 
@@ -20,7 +20,7 @@ if (isset($_POST['login'])) {
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
         $_SESSION['user'] = $row['id'];
-        header('Location: /');
+        echo '<meta http-equiv="refresh" content="0; URL=/">';
         exit();
     } else {
         $_SESSION['error'] = 'Invalid email or password';

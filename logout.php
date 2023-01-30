@@ -3,7 +3,7 @@
 include 'db.php';
 
 unset($_SESSION['user']);
-header('location: login.php');
+echo '<meta http-equiv="refresh" content="0; URL=/login.php">';
 exit();
 
 ?>
