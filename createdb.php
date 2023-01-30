@@ -56,10 +56,10 @@ $sql = "CREATE TABLE IF NOT EXISTS pets (
     `quantity` INT(6),
     `approved_at` TIMESTAMP NULL DEFAULT NULL,
     `category_id` INT(6) UNSIGNED,
-    `vendor_id` INT(6) UNSIGNED,
+    `user_id` INT(6) UNSIGNED,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (`category_id`) REFERENCES categories(`id`),
-    FOREIGN KEY (`vendor_id`) REFERENCES vendors(`id`)
+    FOREIGN KEY (`user_id`) REFERENCES users(`id`)
     )";
 
 if (!mysqli_query($conn, $sql)) {
@@ -119,3 +119,11 @@ if (mysqli_num_rows($result) <= 0) {
     }
 }
 
+$sql = "SHOW COLUMNS FROM users LIKE 'has_business'";
+$result = mysqli_query($conn, $sql);
+if (mysqli_num_rows($result) <= 0) {
+    $sql = "ALTER TABLE users ADD COLUMN has_business BOOLEAN DEFAULT FALSE";
+    if (!mysqli_query($conn, $sql)) {
+        die("Error adding column has_business to users: " . mysqli_error($conn));
+    }
+}

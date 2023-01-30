@@ -21,6 +21,7 @@ if (isset($_POST['login'])) {
         $row = mysqli_fetch_assoc($result);
         $_SESSION['user'] = $row['id'];
         header('Location: /');
+        exit();
     } else {
         $_SESSION['error'] = 'Invalid email or password';
     }

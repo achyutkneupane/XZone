@@ -21,6 +21,7 @@ if (isset($_POST['register'])) {
     } else {
         $_SESSION['success'] = 'User registered successfully';
         header('Location: login.php');
+        exit();
     }
 }
 

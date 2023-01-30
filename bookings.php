@@ -54,11 +54,27 @@ if(isset($_GET['payment'])) {
 
         if($status == 'success') {
             $refId = $_GET['refId'];
+            $oid = $_GET['oid'];
+            $bookingIds = explode('-', $oid);
+            $bookings = array_slice($bookingIds, 1);
+
             $sql = "INSERT INTO orders
                     (`paid_at`, `esewa_reference`)
                     VALUE (NOW(), '$refId')";
-            mysqli_query($conn, $sql);
+            $result = mysqli_query($conn, $sql);
+
+            $orderId = "SELECT LAST_INSERT_ID()";
+            $result = mysqli_query($conn, $orderId);
+            $orderId = mysqli_fetch_assoc($result)['LAST_INSERT_ID()'];
+
+            $sql = "UPDATE `bookings`
+                    SET `order_id` = $orderId
+                    WHERE `id` IN (" . implode(',', $bookings) . ")
+            ";
+            $result = mysqli_query($conn, $sql);
+
             if(mysqli_affected_rows($conn) > 0) {
+                echo '<meta http-equiv="refresh" content="0; URL=bookings.php">';
                 $_SESSION['success'] = 'Payment of Rs. ' . $amount . ' successful';
             } else {
                 $_SESSION['error'] = 'Payment of Rs. ' . $amount . ' failed';
@@ -91,6 +107,23 @@ $pid = 'product';
                     </div>
                     <div class="row gy-3">
                         <div class="col-md-12">
+
+                        <?php
+                            $sql = "SELECT 
+                                        b.id as id,
+                                        p.id as pid,
+                                        p.image as image,
+                                        p.name as name,
+                                        b.quantity as quantity,
+                                        b.unit_price as unit_price,
+                                        b.quantity * b.unit_price as total_price
+                                    FROM bookings AS b
+                                    INNER JOIN pets p ON p.id = b.pet_id
+                                    WHERE b.user_id = $user[id]
+                                    AND `order_id` IS NULL";
+                            $result = mysqli_query($conn, $sql);
+                            if (mysqli_num_rows($result) > 0) {
+                                ?>
                             <table class="table table-striped table-responsive">
                                 <thead>
                                     <tr>
@@ -104,26 +137,6 @@ $pid = 'product';
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT 
-                                                b.id as id,
-                                                p.image as image,
-                                                p.name as name,
-                                                v.name as vendor,
-                                                b.quantity as quantity,
-                                                b.unit_price as unit_price,
-                                                b.quantity * b.unit_price as total_price
-                                            FROM bookings AS b
-                                            INNER JOIN pets p ON p.id = b.pet_id
-                                            INNER JOIN vendors v ON v.id = p.vendor_id
-                                            WHERE b.user_id = $user[id]";
-                                    $result = mysqli_query($conn, $sql);
-                                    if (mysqli_num_rows($result) == 0) {
-                                    ?>
-                                        <tr>
-                                            <td colspan="6" class="text-center">No bookings found</td>
-                                        </tr>
-                                    <?php
-                                    }
                                     while ($row = mysqli_fetch_assoc($result)) {
                                         $subtotal += $row['total_price'];
                                         $pid .= '-'.$row['id'];
@@ -133,7 +146,7 @@ $pid = 'product';
                                                 <img src="uploads/<?php echo $row['image']; ?>" alt="" width="100">
                                             </td>
                                             <td><?php echo $row['name']; ?></td>
-                                            <td><?php echo $row['vendor']; ?></td>
+                                            <td><?php echo getVendorNameByPetId($row['pid']); ?></td>
                                             <td><?php echo $row['quantity']; ?></td>
                                             <td>NRs. <?php echo $row['unit_price']; ?></td>
                                             <td>NRs. <?php echo $row['total_price']; ?></td>
@@ -144,6 +157,11 @@ $pid = 'product';
 
                                 </tbody>
                             </table>
+                            <?php
+                            } else {
+                                echo '<h4 class="text-center">No bookings yet</h4>';
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -171,7 +189,11 @@ $pid = 'product';
                                     </tr>
                                     <tr>
                                         <th>Delivery</th>
-                                        <td class="text-end">NRs. <?php echo $delivery; ?></td>
+                                        <td class="text-end">NRs.
+                                        <?php
+                                            $subtotal > 0 ? $delivery = 50 : $delivery = 0;
+                                            echo $delivery;
+                                        ?></td>
                                     <tr>
                                         <th>Total</th>
                                         <td class="text-end">NRs. <?php echo ($subtotal + $delivery); ?></td>
@@ -180,6 +202,9 @@ $pid = 'product';
                             </table>
                         </div>
                     </div>
+                    <?php
+                    if($subtotal > 0) {
+                    ?>
                     <div class="row gy-3">
                         <div class="col-md-12">
                             <form action="https://uat.esewa.com.np/epay/main" method="POST">
@@ -196,6 +221,9 @@ $pid = 'product';
                             </form>
                         </div>
                     </div>
+                    <?php
+                    }
+                    ?>
                 </div>
             </div>
         </div>

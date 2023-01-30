@@ -2,6 +2,28 @@
 <?php
 include 'header.php';
 
+// if post request
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_GET['action'])) {
+        if ($_GET['action'] == "review") {
+            $pet_id = $_GET['id'];
+            $user_id = $user['id'];
+            $rating = $_POST['rating'];
+            $review = $_POST['review'];
+
+            $sql = "INSERT INTO reviews (pet_id, user_id, rating, review) VALUES ('$pet_id', '$user_id', '$rating', '$review')";
+            $result = mysqli_query($conn, $sql);
+            if ($result) {
+                $_SESSION['success'] = 'Review added successfully!';
+                echo '<meta http-equiv="refresh" content="0; URL=product.php?id=' . $pet_id . '" />';
+                exit();
+            } else {
+                $_SESSION['error'] = 'Something went wrong!';
+            }
+        }
+    }
+}
+
 $id = $_GET['id'];
 
 $sql = "SELECT
@@ -11,11 +33,9 @@ $sql = "SELECT
         p.price AS price,
         p.image AS image,
         p.quantity AS quantity,
-        p.description AS description,
-        v.name AS vendor_name
+        p.description AS description
         FROM pets AS p
         INNER JOIN categories AS c ON p.category_id = c.id
-        INNER JOIN vendors AS v ON p.vendor_id = v.id
         WHERE p.id = '$id'";
 
 $result = mysqli_query($conn, $sql);
@@ -23,6 +43,18 @@ $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) > 0) {
     $pet = mysqli_fetch_assoc($result);
 }
+
+?>
+
+<?php
+$sql = "SELECT * FROM reviews WHERE pet_id = $id";
+$reviewResult = mysqli_query($conn, $sql);
+$reviewsCount = mysqli_num_rows($reviewResult);
+
+$sql = "SELECT AVG(rating) AS rating FROM reviews WHERE pet_id = $id";
+$result = mysqli_query($conn, $sql);
+$rating = mysqli_fetch_assoc($result);
+$rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) : 0;
 ?>
 <style>
     .product-image {
@@ -73,76 +105,6 @@ if (mysqli_num_rows($result) > 0) {
         cursor: pointer;
     }
 </style>
-
-<style>
-    .review-card {
-        border: 1px solid #ccc;
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-    }
-
-    .review-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-
-    .review-title {
-        flex: 1;
-    }
-
-    .review-date {
-        font-size: 12px;
-        color: #777;
-        margin-top: 5px;
-    }
-
-    .review-rating {
-        font-size: 20px;
-        margin-left: 10px;
-    }
-
-    .review-rating i {
-        color: #ffc107;
-    }
-
-    form {
-        margin-top: 20px;
-    }
-
-    form label {
-        font-weight: 600;
-    }
-
-    form .form-control {
-        border-radius: 10px;
-    }
-
-
-    .input-group {
-        display: flex;
-        align-items: center;
-    }
-
-    .input-group-text {
-        background-color: #f5f5f5;
-        border: 1px solid #ccc;
-        border-radius: 10px 0 0 10px;
-        padding: 10px 15px;
-    }
-
-    .form-control {
-        border-radius: 0 10px 10px 0;
-        border: 1px solid #ccc;
-        padding: 10px 15px;
-    }
-
-    .form-control:focus {
-        border-color: #007bff;
-        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-    }
-</style>
 <div class="container bg-white mt-4 p-5 rounded-4">
     <div class="row gy-3 align-items-center">
         <div class="col-md-6">
@@ -159,18 +121,28 @@ if (mysqli_num_rows($result) > 0) {
             </p>
             <!-- added by -->
             <p class="product-category">
-                <strong>Added by:</strong> <?php echo $pet['vendor_name']; ?>
+                <strong>Added by:</strong> <?php echo getVendorNameByPetId($pet['pet_id']); ?>
             </p>
             <div class="product-rating">
-                <i class="far fa-star"></i>
-                <i class="far fa-star"></i>
-                <i class="far fa-star"></i>
-                <i class="far fa-star"></i>
-                <i class="far fa-star"></i>
-                <!-- <i class="fas fa-star-half-alt"></i> -->
+                <!-- <i class="far fa-star"></i> for no rate -->
+                <!-- <i class="fas fa-star"></i> for full rate -->
+                <!-- <i class="fas fa-star-alt"></i> for half rate -->
+                <?php
+                for ($i = 0; $i < 5; $i++) {
+                    if ($rating > $i) {
+                        if ($rating > $i + 0.5) {
+                            echo '<i class="fas fa-star"></i>';
+                        } else {
+                            echo '<i class="fas fa-star-half-alt"></i>';
+                        }
+                    } else {
+                        echo '<i class="far fa-star"></i>';
+                    }
+                }
+                ?>
             </div>
             <div class="mb-3 text-muted">
-                0 reviews
+                <?php echo $reviewsCount; ?> Review<?php echo $reviewsCount > 1 ? 's' : ''; ?>
             </div>
 
             <p class="product-description">
@@ -187,66 +159,101 @@ if (mysqli_num_rows($result) > 0) {
     </div>
 
 
-    <!-- <div class="row gy-3 mt-5">
-        <h2>Product Reviews</h2>
-        <div class="col-md-6">
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="review-title">
-                        <p class="review-date">January 1, 2022</p>
-                    </div>
-                    <div class="review-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                    </div>
-                </div>
-                <div class="review-body">
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor,
-                        magna at iaculis suscipit, ipsum nibh euismod augue, ut euismod enim
-                        velit vel velit.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="review-card">
-                <div class="review-header">
-                    <div class="review-title">
-                        <p class="review-date">January 2, 2022</p>
-                    </div>
-                    <div class="review-rating">
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star"></i>
-                        <i class="fas fa-star-half-alt"></i>
-                        <i class="far fa-star"></i>
-                        <i class="far fa-star"></i>
-                    </div>
-                </div>
-                <div class="review-body">
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed auctor,
-                        magna at iaculis suscipit, ipsum nibh euismod augue, ut euismod enim
-                        velit vel velit.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div> -->
+    <style>
+        .review-card {
+            background-color: #f7f7f7;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
 
-    <!-- <div class="row gy-3 mt-5">
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .review-title {
+            font-weight: bold;
+        }
+
+        .review-rating {
+            display: flex;
+        }
+
+        .review-rating i {
+            color: #ffc107;
+            font-size: 1.5em;
+            margin-right: 5px;
+        }
+
+        #review-text {
+            resize: none;
+        }
+
+        #review-rating {
+            height: calc(2.25rem + 2px);
+        }
+
+        .row.gy-3 {
+            margin-bottom: 2rem;
+        }
+
+        h3 {
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        form {
+            background-color: #f9f9f9;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+        }
+
+        label {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+        }
+
+        select.form-control {
+            height: 3.125rem;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            background-color: #4CAF50;
+            color: #fff;
+            border-color: #4CAF50;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            font-weight: bold;
+            transition: all 0.3s ease-in-out;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #3E8E41;
+            border-color: #3E8E41;
+            cursor: pointer;
+        }
+    </style>
+
+    <div class="row gy-3 mt-5">
         <h3>Add a Review</h3>
-        <form>
+        <form action="product.php?action=review&id=<?php echo $pet['pet_id']; ?>" method="POST">
             <div class="form-group mb-3">
                 <label for="review-text">Review</label>
-                <textarea class="form-control" id="review-text" rows="3" placeholder="Enter your review"></textarea>
+                <textarea class="form-control" id="review-text" rows="3" name="review" placeholder="Enter your review"></textarea>
             </div>
             <div class="form-group mb-3">
                 <label for="review-rating">Rating</label>
-                <select class="form-control" id="review-rating">
+                <select class="form-control" id="review-rating" name="rating">
                     <option>1</option>
                     <option>2</option>
                     <option>3</option>
@@ -254,9 +261,65 @@ if (mysqli_num_rows($result) > 0) {
                     <option>5</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-success">Submit Review</button>
+            <input type="submit" class="btn btn-success" value="Submit Review" />
         </form>
-    </div> -->
+    </div>
+
+    <?php
+    if (mysqli_num_rows($reviewResult) > 0) {
+    ?>
+        <div class="row gy-3 mt-5 justify-content-center">
+            <h2>Product Reviews</h2>
+            <?php
+            while ($review = mysqli_fetch_assoc($reviewResult)) {
+            ?>
+                <div class="col-md-4">
+                    <div class="review-card">
+                        <div class="review-header">
+                            <div class="review-title">
+                                <p class="review-date"><?php echo date('d M, Y', strtotime($review['created_at'])); ?></p>
+                            </div>
+                            <div class="review-rating">
+                                <?php
+                                $rating = $review['rating'];
+                                for ($i = 0; $i < 5; $i++) {
+                                    if ($rating > $i) {
+                                        if ($rating > $i + 0.5) {
+                                            echo '<i class="fas fa-star"></i>';
+                                        } else {
+                                            echo '<i class="fas fa-star-half-alt"></i>';
+                                        }
+                                    } else {
+                                        echo '<i class="far fa-star"></i>';
+                                    }
+                                }
+                                ?>
+                            </div>
+
+                        </div>
+                        <div class="review-body">
+                            <div>
+                                <?php echo $review['review']; ?>
+                            </div>
+                            <div class="text-muted">
+                                -
+                                <?php
+                                $sql = "SELECT `name` FROM users WHERE id = " . $review['user_id'];
+                                $userResult = mysqli_query($conn, $sql);
+                                $user = mysqli_fetch_assoc($userResult);
+                                echo $user['name'];
+                                ?>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php
+            }
+            ?>
+        </div>
+    <?php
+    }
+    ?>
 </div>
 <?php
 include 'footer.php';

@@ -7,6 +7,19 @@ include '../header.php';
         <?php
         include '../sidebar.php';
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+            if (isset($_GET['type']) && $_GET['type'] == "business") {
+                $hasBusiness = $_POST['has_business'];
+                $sql = "UPDATE users SET has_business = $hasBusiness WHERE id = $user[id]";
+                $result = mysqli_query($conn, $sql);
+                if ($result) {
+                    $_SESSION['success'] = "Business status updated successfully";
+                    if($hasBusiness) echo '<meta http-equiv="refresh" content="0; URL=business-info.php "/>';
+                } else {
+                    $_SESSION['error'] = "Business status update failed";
+                }
+            }
+
             $errors = [];
             if (empty($_POST['name'])) {
                 $errors['name'] = 'Name is required';
@@ -33,14 +46,17 @@ include '../header.php';
                     $stmt->close();
 
                     header('Location: profile.php');
+                    exit();
                 } else {
                     $_SESSION['error'] = 'Password is incorrect';
                 }
             }
         }
-
         ?>
         <div class="col-md-9">
+            <?php
+            include '../alert.php';
+            ?>
             <form class="card" action="edit-profile.php" method="POST">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <div>
@@ -52,13 +68,6 @@ include '../header.php';
                 </div>
 
                 <div class="card-body">
-                    <div class="row gy-3">
-                        <div class="col-md-12">
-                            <?php
-                            include '../alert.php';
-                            ?>
-                        </div>
-                    </div>
                     <div class="row gy-3 mb-3">
                         <label for="name" class="col-md-4 col-form-label text-md-end">Name</label>
 
@@ -92,6 +101,25 @@ include '../header.php';
                                 You must enter your password to edit profile.
                             </small>
                         </div>
+                    </div>
+                </div>
+            </form>
+
+            <form class="card" action="edit-profile.php?type=business" method="POST">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <div>
+                        Business
+                    </div>
+                    <div>
+                        <button type="submit" class="btn btn-success">Update</button>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <input type="hidden" name="has_business" value="0">
+                    <div class="form-group">
+                        <input type="checkbox" name="has_business" value="1" <?php echo $user['has_business'] ? 'checked' : ''; ?>>
+                        <label for="has_business">I have a business</label>
                     </div>
                 </div>
             </form>

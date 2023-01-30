@@ -51,14 +51,13 @@
                 p.price AS price,
                 p.image AS image,
                 p.quantity AS quantity,
-                v.name AS vendor_name
+                (SELECT COUNT(*) FROM reviews WHERE pet_id = p.id) AS review_count
                 FROM pets AS p
                 INNER JOIN categories AS c ON p.category_id = c.id
-                INNER JOIN vendors AS v ON p.vendor_id = v.id
                 WHERE p.approved_at IS NOT NULL
             ";
 
-        $pets = mysqli_query($conn, $sql);        
+        $pets = mysqli_query($conn, $sql);
 
         if (mysqli_num_rows($pets) <= 0) {
         ?>
@@ -74,9 +73,16 @@
                 $image = $row['image'];
                 $name = $row['pet_name'];
                 $category = $row['category_name'];
-                $vendorName = $row['vendor_name'];
+                $vendorName = getVendorNameByPetId($pet_id);
+                $reviewCount = $row['review_count'] ?? 0;
                 $price = $row['price'];
-                if($row['quantity'] > 0)
+
+                $sql = "SELECT AVG(rating) AS rating FROM reviews WHERE pet_id = $pet_id";
+                $result = mysqli_query($conn, $sql);
+                $rating = mysqli_fetch_assoc($result);
+                $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) : 0;
+
+                if ($row['quantity'] > 0)
                     $quantity = $row['quantity'];
                 else
                     $quantity = 0;
@@ -89,9 +95,9 @@
                         </div>
                         <div class='card-body'>
                             ";
-                            if($outOfStock)
-                                echo "<div class='out-of-stock'>Out of Stock</div>";
-                        echo "
+                if ($outOfStock)
+                    echo "<div class='out-of-stock'>Out of Stock</div>";
+                echo "
                             <h4 class='card-title'>
                                 $name
                             </h4>
@@ -107,13 +113,19 @@
                                         Nrs. $price
                                     </span>
                                 </div>
-                                <div class='rating fs-6'>
-                                    <i class='far fa-star'></i>
-                                    <i class='far fa-star'></i>
-                                    <i class='far fa-star'></i>
-                                    <i class='far fa-star'></i>
-                                    <i class='far fa-star'></i>
-                                    <span class='text-muted'>(0)</span>
+                                <div class='rating fs-6'>";
+                                for ($i = 0; $i < 5; $i++) {
+                                    if ($rating > $i) {
+                                        if ($rating > $i + 0.5) {
+                                            echo '<i class="fas fa-star"></i>';
+                                        } else {
+                                            echo '<i class="fas fa-star-half-alt"></i>';
+                                        }
+                                    } else {
+                                        echo '<i class="far fa-star"></i>';
+                                    }
+                                }
+                                echo "<span class='text-muted'>($reviewCount)</span>
                                 </div>
                             </div>
                         </div>

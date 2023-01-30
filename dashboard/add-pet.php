@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $path = '../images/pets/' . $pet_image;
     move_uploaded_file($tmp_name, $path);
 
-    $sql = "INSERT INTO pets (name, slug, description, price, quantity, category_id, vendor_id, image) VALUES ('$pet_name', '$pet_slug', '$pet_description', '$pet_price', '$pet_quantity', '$pet_category', '$vendor[id]', '$path')";
+    $sql = "INSERT INTO pets (name, slug, description, price, quantity, category_id, user_id, image) VALUES ('$pet_name', '$pet_slug', '$pet_description', '$pet_price', '$pet_quantity', '$pet_category', '$user[id]', '$path')";
 
     if (mysqli_query($conn, $sql)) {
         $_SESSION['success'] = 'Pet added';

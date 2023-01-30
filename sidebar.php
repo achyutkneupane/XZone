@@ -51,16 +51,14 @@
     <?php } ?>
 
     <!-- add pet -->
-    <?php if ($isVendor) { ?>
-        <a href="/dashboard/add-pet.php" class="list-group-item list-group-item-action
-        <?php if ($route == 'add-pet.php') {
-            echo 'list-group-item-success active';
-        } ?>" <?php if ($route == 'add-pet.php') {
-                    echo 'aria-current="true"';
-                } ?>>
-            Add Pet
-        </a>
-    <?php } ?>
+    <a href="/dashboard/add-pet.php" class="list-group-item list-group-item-action
+    <?php if ($route == 'add-pet.php') {
+        echo 'list-group-item-success active';
+    } ?>" <?php if ($route == 'add-pet.php') {
+                echo 'aria-current="true"';
+            } ?>>
+        Add Pet
+    </a>
 
     <!-- view profile -->
     <a href="/dashboard/profile.php" class="list-group-item list-group-item-action

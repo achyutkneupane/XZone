@@ -51,3 +51,30 @@ function slugify($text)
 
     return $text;
 }
+
+
+function getVendorNameByPetId($pet_id)
+{
+    global $conn;
+
+    $sql = "SELECT user_id FROM pets WHERE id = '$pet_id'";
+    $result = mysqli_query($conn, $sql);
+    $pet = mysqli_fetch_assoc($result);
+
+    $sql = "SELECT * FROM vendors WHERE user_id = '$pet[user_id]'";
+    $result = mysqli_query($conn, $sql);
+    $businessSet = mysqli_num_rows($result) > 0;
+
+    $sellerSql = "SELECT * FROM users WHERE id = '$pet[user_id]'";
+    $sellerResult = mysqli_query($conn, $sellerSql);
+    $seller = mysqli_fetch_assoc($sellerResult);
+    $hasBusiness = $seller['has_business'] == "1";
+
+    if ($hasBusiness && $businessSet) {
+        $vendor = mysqli_fetch_assoc($result);
+        return $vendor['name'];
+    } else {
+        return $seller['name'];
+    }
+
+}

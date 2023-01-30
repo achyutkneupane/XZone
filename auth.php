@@ -9,6 +9,6 @@ if (isset($_SESSION['user'])) {
     if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
         $isAdmin = $user['role'] == 'admin';
-        $isVendor = $user['role'] == 'vendor';
+        $isVendor = $user['has_business'];
     }
 }
