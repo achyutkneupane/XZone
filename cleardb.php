@@ -2,14 +2,25 @@
 
 include('db.php');
 
-$sql = "DROP TABLE IF EXISTS `ratings`; ";
-$sql .= "DROP TABLE IF EXISTS `pets`; ";
-$sql .= "DROP TABLE IF EXISTS `vendors`; ";
-$sql .= "DROP TABLE IF EXISTS `categories`; ";
-$sql .= "DROP TABLE IF EXISTS `users`; ";
+$query_disable_checks = 'SET foreign_key_checks = 0';
+$result = mysqli_query($conn, $query_disable_checks);
 
-if (!mysqli_query($conn, $sql)) {
-    die("Error dropping tables: " . mysqli_error($conn));
+$sql = "SHOW TABLES";
+$result = mysqli_query($conn, $sql);
+
+while($row = mysqli_fetch_row($result)) {
+    $sql = "DROP TABLE IF EXISTS $row[0]";
+    $wiperesult = mysqli_query($conn, $sql);
+    if(!$wiperesult) {
+        echo "Error dropping table $row[0]: " . mysqli_error($conn);
+    }
+}
+
+$query_enable_checks = 'SET foreign_key_checks = 1';
+$result = mysqli_query($conn, $query_enable_checks);
+
+if(!$result) {
+    echo "Error enabling foreign key checks: " . mysqli_error($conn);
 } else {
-    echo "Tables dropped successfully";
+    echo "Database cleared successfully";
 }
