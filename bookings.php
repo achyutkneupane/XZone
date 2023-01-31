@@ -74,8 +74,9 @@ if(isset($_GET['payment'])) {
             $result = mysqli_query($conn, $sql);
 
             if(mysqli_affected_rows($conn) > 0) {
-                echo '<meta http-equiv="refresh" content="0; URL=bookings.php">';
                 $_SESSION['success'] = 'Payment of Rs. ' . $amount . ' successful';
+                echo '<meta http-equiv="refresh" content="0; URL=bookings.php">';
+                exit();
             } else {
                 $_SESSION['error'] = 'Payment of Rs. ' . $amount . ' failed';
             }

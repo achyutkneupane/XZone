@@ -1,5 +1,7 @@
 <?php
 
+include 'mailconfig.php';
+
 function getRole()
 {
     if ($GLOBALS['user']['role'] == 'admin') {
@@ -76,5 +78,43 @@ function getVendorNameByPetId($pet_id)
     } else {
         return $seller['name'];
     }
+}
 
+function sendMail($name, $email){
+    require "PHPMailer/mail-config.php";
+  
+    $mail->addAddress($email, $name); 
+    $mail->isHTML(true); 
+    $mail->Subject = 'Dummy Email | PHP Mailer';
+    $mail->Body = 'This is dummy mail which is sent from PHP Mailer';
+  	if($mail->send()){
+    	echo "Message has been sent successfully";
+	} 
+	else{
+    	echo "Mailer Error: " . $mail->ErrorInfo;
+    }
+}
+
+function canReview($pet_id)
+{
+    global $conn;
+    global $user;
+
+    if(!isset($user)) {
+        return false;
+    }
+
+    $sql = "SELECT * FROM reviews WHERE pet_id = '$pet_id' AND user_id = '$user[id]'";
+    $result = mysqli_query($conn, $sql);
+    $reviewed = mysqli_num_rows($result) > 0;
+
+    $sql = "SELECT * FROM pets WHERE id = '$pet_id' AND user_id = '$user[id]'";
+    $result = mysqli_query($conn, $sql);
+    $isSeller = mysqli_num_rows($result) > 0;
+
+    if ($isSeller) {
+        return false;
+    }
+
+    return !$reviewed;
 }

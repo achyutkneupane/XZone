@@ -105,7 +105,7 @@ $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) :
         cursor: pointer;
     }
 </style>
-<div class="container bg-white mt-4 p-5 rounded-4">
+<div class="container bg-white my-4 p-5 rounded-4">
     <div class="row gy-3 align-items-center">
         <div class="col-md-6">
             <img src="<?php echo $pet['image']; ?>" class="img-fluid product-image my-auto" alt="Product Image">
@@ -243,7 +243,9 @@ $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) :
             cursor: pointer;
         }
     </style>
-
+    <?php
+    if(canReview($pet['pet_id'])) {
+    ?>
     <div class="row gy-3 mt-5">
         <h3>Add a Review</h3>
         <form action="product.php?action=review&id=<?php echo $pet['pet_id']; ?>" method="POST">
@@ -264,6 +266,9 @@ $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) :
             <input type="submit" class="btn btn-success" value="Submit Review" />
         </form>
     </div>
+    <?php
+    }
+    ?>
 
     <?php
     if (mysqli_num_rows($reviewResult) > 0) {
