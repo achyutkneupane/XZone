@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     if (mysqli_query($conn, $sql)) {
         $_SESSION['success'] = 'Pet added';
+        petAddedMail($user['name'], $user['email']);
     } else {
         $_SESSION['error'] = 'Failed to add pet';
     }

@@ -1,7 +1,5 @@
 <?php
 
-include 'mailconfig.php';
-
 function getRole()
 {
     if ($GLOBALS['user']['role'] == 'admin') {
@@ -80,18 +78,23 @@ function getVendorNameByPetId($pet_id)
     }
 }
 
-function sendMail($name, $email){
-    require "PHPMailer/mail-config.php";
+function petAddedMail($name, $email) {
+    include 'mailconfig.php';
   
     $mail->addAddress($email, $name); 
     $mail->isHTML(true); 
-    $mail->Subject = 'Dummy Email | PHP Mailer';
-    $mail->Body = 'This is dummy mail which is sent from PHP Mailer';
-  	if($mail->send()){
-    	echo "Message has been sent successfully";
-	} 
-	else{
-    	echo "Mailer Error: " . $mail->ErrorInfo;
+    $mail->Subject = 'Pet Added';
+    $mail->Body = '<h1>Hi '.$name.',</h1><p>Your pet has been added successfully. You can now view your pet in the system.</p><p>Regards,<br>XZone</p>';
+  	if(!$mail->send()){
+    	$_SESSION['error'] =  "Mailer Error: " . $mail->ErrorInfo;
+    }
+
+    $mail->addAddress("admin@xzone.com", "XZone Admin");
+    $mail->isHTML(true); 
+    $mail->Subject = 'Pet Added to System';
+    $mail->Body = '<h1>Hello Admin,</h1><p>'.$name.' has added a pet to the system.<br /> Review pets to approve/disapprove them.</p><p>Regards,<br>XZone</p>';
+  	if(!$mail->send()){
+    	$_SESSION['error'] =  "Mailer Error: " . $mail->ErrorInfo;
     }
 }
 

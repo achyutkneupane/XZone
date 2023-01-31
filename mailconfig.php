@@ -8,11 +8,11 @@ $mail = new PHPMailer\PHPMailer\PHPMailer();;
 $mail->isSMTP();
 $mail->SMTPAuth = true;
 $mail->SMTPSecure = 'tls';
-$mail->Host = 'YOUR HOST';
-$mail->Port = 465;
+$mail->Host = 'sandbox.smtp.mailtrap.io';
+$mail->Port = 2525;
 
-$mail->Username = 'YOUR EMAIL/USERNAME';
-$mail->Password = 'YOUR PASSOWORD';
+$mail->Username = '3a433285e4e4c5';
+$mail->Password = 'c3bc63153ec68c';
 
-$mail->setFrom('YOUR EMAIL', 'YOUR NAME');
+$mail->setFrom('contact@xzone.com', 'XZone');
 ?>

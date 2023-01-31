@@ -76,7 +76,7 @@
                 <div class='col-md-4'>
                     <div class='card'>
                         <div class='card-img-top-wrap'>
-                            <img class='card-img-top' src='$image' alt='$name'>
+                            <img class='card-img-top' src='$image' alt='$name' height='250' style='object-fit: cover;' />
                         </div>
                         <div class='card-body'>
                             ";

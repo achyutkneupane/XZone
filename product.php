@@ -148,6 +148,9 @@ $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) :
             <p class="product-description">
                 <?php echo $pet['description']; ?>
             </p>
+            <?php
+            if(!$isAdmin && !$isVendor) {
+            ?>
             <form action="bookings.php?action=book&product=<?php echo $pet['pet_id']; ?>" method="POST">
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-success text-white" id="basic-addon1">Quantity</span>
@@ -155,6 +158,9 @@ $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) :
                 </div>
                 <input type="submit" class="btn btn-success booking-button" value="Book">
             </form>
+            <?php
+            }
+            ?>
         </div>
     </div>
 
