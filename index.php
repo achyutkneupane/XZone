@@ -1,6 +1,22 @@
 <title>XZone</title>
 <?php
 include 'header.php';
+
+$sql = "SELECT
+                p.id AS pet_id,
+                p.name AS pet_name,
+                c.name AS category_name,
+                p.price AS price,
+                p.image AS image,
+                p.quantity AS quantity,
+                (SELECT COUNT(*) FROM reviews WHERE pet_id = p.id) AS review_count
+                FROM pets AS p
+                INNER JOIN categories AS c ON p.category_id = c.id
+                WHERE p.approved_at IS NOT NULL
+            ";
+
+$pets = mysqli_query($conn, $sql);
+
 ?>
 <div class="container my-3">
     <div class="row">
@@ -15,19 +31,19 @@ include 'header.php';
         </div>
         <div class="col-md-12">
             <div class="d-flex justify-content-between border rounded bg-success align-items-center p-3 text-white">
-                    <div>
-                        Book your pet for the <strong>Pet Park</strong>
-                    </div>
-                    <div>
-                        <a href="petpark.php" class="btn btn-light">Book Now</a>
-                    </div>
+                <div>
+                    Book your pet for the <strong>Pet Park</strong>
+                </div>
+                <div>
+                    <a href="petpark.php" class="btn btn-light">Book Now</a>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <?php
-    include 'products.php';
-    ?>
+include 'products.php';
+?>
 <?php
 include 'footer.php';
 ?>

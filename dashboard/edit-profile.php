@@ -14,10 +14,11 @@ include '../header.php';
                 $result = mysqli_query($conn, $sql);
                 if ($result) {
                     $_SESSION['success'] = "Business status updated successfully";
-                    if($hasBusiness) {
-                        echo '<meta http-equiv="refresh" content="0; URL=business-info.php "/>';
-                        exit();
+                    echo '<meta http-equiv="refresh" content="0; URL=edit-profile.php "/>';
+                    if(!$hasBusiness) {
+                        unset($_SESSION['error']);
                     }
+                    exit();
                 } else {
                     $_SESSION['error'] = "Business status update failed";
                 }

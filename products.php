@@ -44,21 +44,6 @@
     <div class="row gy-3 justify-content-center">
         <?php
 
-        $sql = "SELECT
-                p.id AS pet_id,
-                p.name AS pet_name,
-                c.name AS category_name,
-                p.price AS price,
-                p.image AS image,
-                p.quantity AS quantity,
-                (SELECT COUNT(*) FROM reviews WHERE pet_id = p.id) AS review_count
-                FROM pets AS p
-                INNER JOIN categories AS c ON p.category_id = c.id
-                WHERE p.approved_at IS NOT NULL
-            ";
-
-        $pets = mysqli_query($conn, $sql);
-
         if (mysqli_num_rows($pets) <= 0) {
         ?>
 
