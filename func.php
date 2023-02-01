@@ -53,19 +53,25 @@ function slugify($text)
 }
 
 
-function getVendorNameByPetId($pet_id)
+function getVendorNameById($type, $id)
 {
     global $conn;
 
-    $sql = "SELECT user_id FROM pets WHERE id = '$pet_id'";
+    if($type == 'pets') {
+        $sql = "SELECT user_id FROM pets WHERE id = '$id'";
+    } else if($type == 'products') {
+        $sql = "SELECT user_id FROM products WHERE id = '$id'";
+    } else {
+        return 'Not Available';
+    }
     $result = mysqli_query($conn, $sql);
-    $pet = mysqli_fetch_assoc($result);
+    $product = mysqli_fetch_assoc($result);
 
-    $sql = "SELECT * FROM vendors WHERE user_id = '$pet[user_id]'";
+    $sql = "SELECT * FROM vendors WHERE user_id = '$product[user_id]'";
     $result = mysqli_query($conn, $sql);
     $businessSet = mysqli_num_rows($result) > 0;
 
-    $sellerSql = "SELECT * FROM users WHERE id = '$pet[user_id]'";
+    $sellerSql = "SELECT * FROM users WHERE id = '$product[user_id]'";
     $sellerResult = mysqli_query($conn, $sellerSql);
     $seller = mysqli_fetch_assoc($sellerResult);
     $hasBusiness = $seller['has_business'] == "1";

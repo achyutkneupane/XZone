@@ -81,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                 }
                                 ?>
                             </select>
-                            <a class="btn btn-link" href="add-category.php">Add Category</a>
+                            <a class="btn btn-link mt-2" href="add-category.php">Add Category</a>
                         </div>
                     </div>
 

@@ -17,11 +17,22 @@ $sql = "SELECT
 
 $pets = mysqli_query($conn, $sql);
 
+$sql = "SELECT
+        p.id AS product_id,
+        p.name AS product_name,
+        p.price AS price,
+        p.image AS image,
+        c.name AS category_name
+        FROM products AS p
+        INNER JOIN categories AS c ON p.category_id = c.id
+        ORDER BY p.created_at DESC";
+
+$products = mysqli_query($conn, $sql);
+
 ?>
 <div class="container my-3">
     <div class="row">
         <div class="offset-md-9 col-md-3">
-            <!-- search bar -->
             <form action="search.php" method="GET">
                 <div class="input-group">
                     <input type="text" name="search" class="form-control" placeholder="Search" />
@@ -29,6 +40,20 @@ $pets = mysqli_query($conn, $sql);
                 </div>
             </form>
         </div>
+    </div>
+</div>
+<div class="container mb-3">
+    <div class="row">
+        <div class="col-md-12 text-center text-uppercase">
+            <h1 class="text-success">Pets</h1>
+        </div>
+    </div>
+</div>
+<?php
+include 'pets.php';
+?>
+<div class="container my-3">
+    <div class="row">
         <div class="col-md-12">
             <div class="d-flex justify-content-between border rounded bg-success align-items-center p-3 text-white">
                 <div>
@@ -41,9 +66,17 @@ $pets = mysqli_query($conn, $sql);
         </div>
     </div>
 </div>
+<div class="container mb-3">
+    <div class="row">
+        <div class="col-md-12 text-center text-uppercase">
+            <h1 class="text-success">Products</h1>
+        </div>
+    </div>
+</div>
 <?php
 include 'products.php';
 ?>
+<div class="mb-5"></div>
 <?php
 include 'footer.php';
 ?>

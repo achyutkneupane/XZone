@@ -110,6 +110,26 @@ if (!mysqli_query($conn, $sql)) {
     die("Error creating bookings table: " . mysqli_error($conn));
 }
 
+$sql = "CREATE TABLE IF NOT EXISTS products (
+    `id` INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(30) NOT NULL,
+    `description` VARCHAR(100),
+    `image` VARCHAR(100),
+    `price` DECIMAL(8, 2),
+    `category_id` INT(6) UNSIGNED,
+    `user_id` INT(6) UNSIGNED,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`category_id`) REFERENCES categories(`id`),
+    FOREIGN KEY (`user_id`) REFERENCES users(`id`)
+    )";
+
+if (!mysqli_query($conn, $sql)) {
+    die("Error creating products table: " . mysqli_error($conn));
+}
+
+
+
+
 $sql = "SELECT * FROM users WHERE role = 'admin'";
 $result = mysqli_query($conn, $sql);
 if (mysqli_num_rows($result) <= 0) {

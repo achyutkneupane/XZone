@@ -42,7 +42,7 @@ $pets = mysqli_query($conn, $sql);
             echo '<div class="alert alert-danger">No results found for <strong>'.$searchTerm.'</strong></div>';
         } else {
             echo '<div class="bg-white p-3 mb-4">Search results for <strong>'.$searchTerm.'</strong>:</div>';
-            include 'products.php';
+            include 'pets.php';
         }
         ?>
         </div>

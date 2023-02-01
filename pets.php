@@ -44,21 +44,34 @@
     <div class="row gy-3 justify-content-center">
         <?php
 
-        if (mysqli_num_rows($products) <= 0) {
+        if (mysqli_num_rows($pets) <= 0) {
         ?>
 
             <div class="col-md-12 border rounded bg-white p-3 text-center">
-                No Products Found
+                No Pets Found
             </div>
+
         <?php
         } else {
-            while ($row = mysqli_fetch_assoc($products)) {
-                $product_id = $row['product_id'];
+            while ($row = mysqli_fetch_assoc($pets)) {
+                $pet_id = $row['pet_id'];
                 $image = $row['image'];
-                $name = $row['product_name'];
+                $name = $row['pet_name'];
                 $category = $row['category_name'];
-                $vendorName = getVendorNameById('products',$product_id);
+                $vendorName = getVendorNameById('pets',$pet_id);
+                $reviewCount = $row['review_count'] ?? 0;
                 $price = $row['price'];
+
+                $sql = "SELECT AVG(rating) AS rating FROM reviews WHERE pet_id = $pet_id";
+                $result = mysqli_query($conn, $sql);
+                $rating = mysqli_fetch_assoc($result);
+                $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) : 0;
+
+                if ($row['quantity'] > 0)
+                    $quantity = $row['quantity'];
+                else
+                    $quantity = 0;
+                $outOfStock = $quantity <= 0 ? true : false;
                 echo "
                 <div class='col-md-4'>
                     <div class='card'>
@@ -66,6 +79,10 @@
                             <img class='card-img-top' src='$image' alt='$name' height='250' style='object-fit: cover;' />
                         </div>
                         <div class='card-body'>
+                            ";
+                if ($outOfStock)
+                    echo "<div class='out-of-stock'>Out of Stock</div>";
+                echo "
                             <h4 class='card-title'>
                                 $name
                             </h4>
@@ -81,19 +98,31 @@
                                         Nrs. $price
                                     </span>
                                 </div>
+                                <div class='rating fs-6'>";
+                                for ($i = 0; $i < 5; $i++) {
+                                    if ($rating > $i) {
+                                        if ($rating > $i + 0.5) {
+                                            echo '<i class="fas fa-star"></i>';
+                                        } else {
+                                            echo '<i class="fas fa-star-half-alt"></i>';
+                                        }
+                                    } else {
+                                        echo '<i class="far fa-star"></i>';
+                                    }
+                                }
+                                echo "<span class='text-muted'>($reviewCount)</span>
+                                </div>
                             </div>
                         </div>
                         <div class='card-footer text-center'>
-                            <a href='product.php?id=$product_id' class='btn btn-success btn-block w-50'>Go to Details</a>
+                            <a href='pet.php?id=$pet_id' class='btn btn-success btn-block w-50'>Go to Details</a>
                         </div>
                     </div>
                 </div>
                 ";
             }
-        ?>
-
-        <?php
         }
+
         ?>
     </div>
 </div>

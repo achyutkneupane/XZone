@@ -60,6 +60,16 @@
         Add Pet
     </a>
 
+    <!-- add product -->
+    <a href="/dashboard/add-product.php" class="list-group-item list-group-item-action
+    <?php if ($route == 'add-product.php') {
+        echo 'list-group-item-success active';
+    } ?>" <?php if ($route == 'add-product.php') {
+                echo 'aria-current="true"';
+            } ?>>
+        Add Pet Product
+    </a>
+
     <!-- view profile -->
     <a href="/dashboard/profile.php" class="list-group-item list-group-item-action
     <?php if ($route == 'profile.php') {
