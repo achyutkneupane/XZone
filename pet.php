@@ -151,7 +151,7 @@ $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) :
             <?php
             if(!$isAdmin && !$isVendor) {
             ?>
-            <form action="bookings.php?action=book&product=<?php echo $pet['pet_id']; ?>" method="POST">
+            <form action="bookings.php?action=book&pet=<?php echo $pet['pet_id']; ?>" method="POST">
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-success text-white" id="basic-addon1">Quantity</span>
                     <input type="number" class="form-control" placeholder="1" aria-label="Quantity" aria-describedby="basic-addon1" min="0" name="quantity">

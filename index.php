@@ -57,7 +57,7 @@ include 'pets.php';
         <div class="col-md-12">
             <div class="d-flex justify-content-between border rounded bg-success align-items-center p-3 text-white">
                 <div>
-                    Book your pet for the <strong>Pet Park</strong>
+                    Book your pet for the <strong>Pet Shelter</strong>, <strong>Pet Care</strong>, or <strong>Pet Breed</strong> services.
                 </div>
                 <div>
                     <a href="petpark.php" class="btn btn-light">Book Now</a>
