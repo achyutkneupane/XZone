@@ -60,6 +60,9 @@
 
             <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="about-us.php">About Us</a>
+                </li>
                 <!-- Authentication Links -->
                 <?php
                 if (!isset($_SESSION['user'])) {
@@ -77,11 +80,11 @@
                         <a class="nav-link" href="/dashboard">Dashboard</a>
                     </li>
                     <?php
-                    if(!$isAdmin && !$isVendor) {
+                    if (!$isAdmin && !$isVendor) {
                     ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/bookings.php">My Bookings</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/bookings.php">My Bookings</a>
+                        </li>
                     <?php
                     }
                     ?>
