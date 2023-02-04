@@ -19,6 +19,7 @@ if (isset($_POST['login'])) {
 
     if (mysqli_num_rows($result) > 0) {
         $row = mysqli_fetch_assoc($result);
+        session_start();
         $_SESSION['user'] = $row['id'];
         echo '<meta http-equiv="refresh" content="0; URL=/">';
         exit();

@@ -87,7 +87,7 @@ if (mysqli_num_rows($result) > 0) {
             </p>
             <!-- added by -->
             <p class="product-category">
-                <strong>Added by:</strong> <?php echo getVendorNameById('pets',$product['product_id']); ?>
+                <strong>Added by:</strong> <?php echo getVendorNameById('products',$product['product_id']); ?>
             </p>
             <p class="product-description">
                 <?php echo $product['description']; ?>

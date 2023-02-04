@@ -273,7 +273,7 @@ $pid = "";
                                                     <img src="uploads/<?php echo $row['image']; ?>" alt="" width="100">
                                                 </td>
                                                 <td><?php echo $row['name']; ?></td>
-                                                <td><?php echo getVendorNameById('pets', $row['pid']); ?></td>
+                                                <td><?php echo getVendorNameById('products', $row['pid']); ?></td>
                                                 <td><?php echo $row['quantity']; ?></td>
                                                 <td>NRs. <?php echo $row['unit_price']; ?></td>
                                                 <td>NRs. <?php echo $row['total_price']; ?></td>

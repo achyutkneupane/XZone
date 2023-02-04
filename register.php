@@ -14,6 +14,36 @@ if (isset($_POST['register'])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
+    // validate
+    if(empty($name) || empty($email) || empty($password)) {
+        $_SESSION['error'] = 'All fields are required';
+        echo '<meta http-equiv="refresh" content="0; URL=/register.php">';
+        exit();
+    }
+
+    // check if email exists
+    $sql = "SELECT * FROM users WHERE email = '$email'";
+    $result = mysqli_query($conn, $sql);
+    if (mysqli_num_rows($result) > 0) {
+        $_SESSION['error'] = 'Email already exists';
+        echo '<meta http-equiv="refresh" content="0; URL=/register.php">';
+        exit();
+    }
+
+    // if email is in format
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error'] = 'Invalid email format';
+        echo '<meta http-equiv="refresh" content="0; URL=/register.php">';
+        exit();
+    }
+
+    // if password is more than 8 characters
+    if (strlen($password) < 8) {
+        $_SESSION['error'] = 'Password must be at least 8 characters';
+        echo '<meta http-equiv="refresh" content="0; URL=/register.php">';
+        exit();
+    }
+
     $sql = "INSERT INTO users (name, email, password) VALUES ('$name', '$email', '$password')";
 
     if (!mysqli_query($conn, $sql)) {
