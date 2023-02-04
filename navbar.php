@@ -63,6 +63,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="/about-us.php">About Us</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/petpark.php">Pet Park</a>
+                </li>
                 <!-- Authentication Links -->
                 <?php
                 if (!isset($_SESSION['user'])) {

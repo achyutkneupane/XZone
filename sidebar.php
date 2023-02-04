@@ -38,8 +38,8 @@
         Dashboard
     </a>
 
-    <!-- review pets -->
     <?php if ($isAdmin) { ?>
+        <!-- review pets -->
         <a href="/dashboard/review-pets.php" class="list-group-item list-group-item-action
         <?php if ($route == 'review-pets.php') {
             echo 'list-group-item-success active';
@@ -47,6 +47,25 @@
                     echo 'aria-current="true"';
                 } ?>>
             Review Pets
+        </a>
+
+        <!-- list petparks -->
+        <a href="/dashboard/petparks.php" class="list-group-item list-group-item-action
+        <?php if ($route == 'petparks.php') {
+            echo 'list-group-item-success active';
+        } ?>" <?php if ($route == 'petparks.php') {
+                    echo 'aria-current="true"';
+                } ?>>
+            Petparks
+        </a>
+        <!-- add petpark location -->
+        <a href="/dashboard/add-petpark.php" class="list-group-item list-group-item-action
+        <?php if ($route == 'add-petpark.php') {
+            echo 'list-group-item-success active';
+        } ?>" <?php if ($route == 'add-petpark.php') {
+                    echo 'aria-current="true"';
+                } ?>>
+            Add Petpark
         </a>
     <?php } ?>
 

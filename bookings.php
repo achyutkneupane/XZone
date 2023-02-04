@@ -97,12 +97,7 @@ if (isset($_GET['payment'])) {
         if ($status == 'success') {
             $refId = $_GET['refId'];
             $oid = $_GET['oid'];
-            // $bookingIds = explode('-', $oid);
-            // $bookings = array_slice($bookingIds, 1);
-
-            // $oid = pet-1product-1service-1-2
-            // extract pet ids, product ids, and service ids from $oid
-
+            
             $petIds = [];
             $productIds = [];
             $serviceIds = [];

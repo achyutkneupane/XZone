@@ -181,3 +181,17 @@ if (mysqli_num_rows($result) <= 0) {
         die("Error adding column has_business to users: " . mysqli_error($conn));
     }
 }
+
+$sql = "CREATE TABLE IF NOT EXISTS petpark (
+    `id` INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name` VARCHAR(30) NOT NULL,
+    `image` VARCHAR(100),
+    `location` VARCHAR(100),
+    `latitude` NUMERIC(10, 8),
+    `longitude` NUMERIC(10, 8),
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)";
+
+if (!mysqli_query($conn, $sql)) {
+    die("Error creating petpark table: " . mysqli_error($conn));
+}
