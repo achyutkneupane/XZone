@@ -45,8 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } else {
                 $_SESSION['error'] = 'Product not found';
             }
-        }
-        if (isset($_GET['product'])) {
+        } else if (isset($_GET['product'])) {
             $product_id = isset($_GET['product']) ? $_GET['product'] : '';
             $quantity = isset($_POST['quantity']) ? $_POST['quantity'] : '';
 
@@ -63,6 +62,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 }
             } else {
                 $_SESSION['error'] = 'Product not found';
+            }
+        } else if(isset($_GET['service'])) {
+            $petName = isset($_POST['petName']) ? $_POST['petName'] : '';
+            $service = isset($_POST['service']) ? $_POST['service'] : '';
+            $petSize = isset($_POST['petSize']) ? $_POST['petSize'] : '';
+            $date = isset($_POST['date']) ? $_POST['date'] : '';
+            $time = isset($_POST['time']) ? $_POST['time'] : '';
+            $price = 0;
+
+            if($petSize == "small") {
+                $price = 200;
+            } else if($petSize == "medium") {
+                $price = 350;
+            } else if($petSize == "large") {
+                $price = 500;
+            }
+
+            $sql = "INSERT INTO services (user_id, pet_name, service, pet_size, booked_for, created_at, price) VALUES ($user[id], '$petName', '$service', '$petSize', '$date $time', NOW(), $price)";
+            if (mysqli_query($conn, $sql)) {
+                $_SESSION['success'] = 'Booking added successfully';
+            } else {
+                $_SESSION['error'] = 'Booking add failed';
             }
         }
     }
@@ -234,7 +255,49 @@ $pid = 'product';
                             <?php
                             }
 
-                            if ($petBookingCount == 0 && $productBookingCount == 0) {
+                            $sql = "SELECT 
+                                        *
+                                    FROM services 
+                                    WHERE user_id = $user[id]";
+                            $servicesBookingResult = mysqli_query($conn, $sql);
+                            $servicesBookingCount = mysqli_num_rows($servicesBookingResult);
+                            if ($servicesBookingCount > 0) {
+                            ?>
+                                <table class="table table-striped table-responsive">
+                                    <thead>
+                                        <tr>
+                                            <th>Pet Name</th>
+                                            <th>Service</th>
+                                            <th>Pet Size</th>
+                                            <th>Booked For</th>
+                                            <th>Booked At</th>
+                                            <th>Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        while ($row = mysqli_fetch_assoc($servicesBookingResult)) {
+                                            $subtotal += $row['price'];
+                                            $pid .= '-' . $row['id'];
+                                        ?>
+                                            <tr class="align-middle">
+                                                <td><?php echo $row['pet_name']; ?></td>
+                                                <td><?php echo ucwords($row['service']); ?></td>
+                                                <td><?php echo ucwords($row['pet_size']); ?></td>
+                                                <td><?php echo date('d M Y H:i', strtotime($row['booked_for'])); ?></td>
+                                                <td><?php echo date('d M Y H:i', strtotime($row['created_at'])); ?></td>
+                                                <td>NRs. <?php echo $row['price']; ?></td>
+                                            </tr>
+                                        <?php
+                                        }
+                                        ?>
+
+                                    </tbody>
+                                </table>
+                            <?php
+                            }
+
+                            if ($petBookingCount == 0 && $productBookingCount == 0 && $servicesBookingCount == 0) {
                                 echo '<div class="alert alert-warning">No bookings found</div>';
                             }
                             ?>

@@ -60,7 +60,7 @@ include 'pets.php';
                     Book your pet for the <strong>Pet Shelter</strong>, <strong>Pet Care</strong>, or <strong>Pet Breed</strong> services.
                 </div>
                 <div>
-                    <a href="petpark.php" class="btn btn-light">Book Now</a>
+                    <a href="services.php" class="btn btn-light">Book Now</a>
                 </div>
             </div>
         </div>

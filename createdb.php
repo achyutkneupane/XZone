@@ -127,6 +127,22 @@ if (!mysqli_query($conn, $sql)) {
     die("Error creating products table: " . mysqli_error($conn));
 }
 
+$sql = "CREATE TABLE IF NOT EXISTS services (
+    `id` INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT(6) UNSIGNED,
+    `pet_name` VARCHAR(30) NOT NULL,
+    `service` VARCHAR(30) NOT NULL,
+    `pet_size` VARCHAR(30) NOT NULL,
+    `price` DECIMAL(8, 2),
+    `booked_for` TIMESTAMP NULL DEFAULT NULL,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (`user_id`) REFERENCES users(`id`)
+    )";
+
+if (!mysqli_query($conn, $sql)) {
+    die("Error creating services table: " . mysqli_error($conn));
+}
+
 $sql = "CREATE TABLE IF NOT EXISTS product_bookings (
     `id` INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `user_id` INT(6) UNSIGNED,
