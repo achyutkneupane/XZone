@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } else {
                 $_SESSION['error'] = 'Product not found';
             }
-        } else if(isset($_GET['service'])) {
+        } else if (isset($_GET['service'])) {
             $petName = isset($_POST['petName']) ? $_POST['petName'] : '';
             $service = isset($_POST['service']) ? $_POST['service'] : '';
             $petSize = isset($_POST['petSize']) ? $_POST['petSize'] : '';
@@ -71,11 +71,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $time = isset($_POST['time']) ? $_POST['time'] : '';
             $price = 0;
 
-            if($petSize == "small") {
+            if ($petSize == "small") {
                 $price = 200;
-            } else if($petSize == "medium") {
+            } else if ($petSize == "medium") {
                 $price = 350;
-            } else if($petSize == "large") {
+            } else if ($petSize == "large") {
                 $price = 500;
             }
 
@@ -97,8 +97,29 @@ if (isset($_GET['payment'])) {
         if ($status == 'success') {
             $refId = $_GET['refId'];
             $oid = $_GET['oid'];
-            $bookingIds = explode('-', $oid);
-            $bookings = array_slice($bookingIds, 1);
+            // $bookingIds = explode('-', $oid);
+            // $bookings = array_slice($bookingIds, 1);
+
+            // $oid = pet-1product-1service-1-2
+            // extract pet ids, product ids, and service ids from $oid
+
+            $petIds = [];
+            $productIds = [];
+            $serviceIds = [];
+
+            $bookingIds = explode('_', $oid);
+
+            foreach ($bookingIds as $bookingId) {
+                $bookingLoopIds = explode('-', $bookingId);
+                if ($bookingLoopIds[0] == 'pet') {
+                    $petIds = array_slice($bookingLoopIds, 1);
+                } elseif ($bookingLoopIds[0] == 'product') {
+                    $productIds = array_slice($bookingLoopIds, 1);
+                } elseif ($bookingLoopIds[0] == 'service') {
+                    $serviceIds = array_slice($bookingLoopIds, 1);
+                }
+            }
+            
 
             $sql = "INSERT INTO orders
                     (`paid_at`, `esewa_reference`)
@@ -111,7 +132,19 @@ if (isset($_GET['payment'])) {
 
             $sql = "UPDATE `bookings`
                     SET `order_id` = $orderId
-                    WHERE `id` IN (" . implode(',', $bookings) . ")
+                    WHERE `id` IN (" . implode(',', $petIds) . ")
+            ";
+            $result = mysqli_query($conn, $sql);
+
+            $sql = "UPDATE `product_bookings`
+                    SET `order_id` = $orderId
+                    WHERE `id` IN (" . implode(',', $productIds) . ")
+            ";
+            $result = mysqli_query($conn, $sql);
+
+            $sql = "UPDATE `services`
+                    SET `order_id` = $orderId
+                    WHERE `id` IN (" . implode(',', $serviceIds) . ")
             ";
             $result = mysqli_query($conn, $sql);
 
@@ -130,7 +163,7 @@ if (isset($_GET['payment'])) {
 
 $subtotal = 0;
 $delivery = 50;
-$pid = 'product';
+$pid = "";
 
 ?>
 <div class="container mt-3">
@@ -152,6 +185,7 @@ $pid = 'product';
                         <div class="col-md-12">
 
                             <?php
+                            $petid = "";
                             $sql = "SELECT 
                                         b.id as id,
                                         p.id as pid,
@@ -167,6 +201,7 @@ $pid = 'product';
                             $petBookingResult = mysqli_query($conn, $sql);
                             $petBookingCount = mysqli_num_rows($petBookingResult);
                             if ($petBookingCount > 0) {
+                                $petid = 'pet';
                             ?>
                                 <table class="table table-striped table-responsive">
                                     <thead>
@@ -183,7 +218,7 @@ $pid = 'product';
                                         <?php
                                         while ($row = mysqli_fetch_assoc($petBookingResult)) {
                                             $subtotal += $row['total_price'];
-                                            $pid .= '-' . $row['id'];
+                                            $petid .= '-' . $row['id'];
                                         ?>
                                             <tr class="align-middle">
                                                 <td>
@@ -203,6 +238,7 @@ $pid = 'product';
                                 </table>
                             <?php
                             }
+                            $proid = "";
                             $sql = "SELECT 
                                         b.id as id,
                                         p.id as pid,
@@ -218,6 +254,7 @@ $pid = 'product';
                             $productBookingResult = mysqli_query($conn, $sql);
                             $productBookingCount = mysqli_num_rows($productBookingResult);
                             if ($productBookingCount > 0) {
+                                $proid = 'product';
                             ?>
                                 <table class="table table-striped table-responsive">
                                     <thead>
@@ -234,7 +271,7 @@ $pid = 'product';
                                         <?php
                                         while ($row = mysqli_fetch_assoc($productBookingResult)) {
                                             $subtotal += $row['total_price'];
-                                            $pid .= '-' . $row['id'];
+                                            $proid .= '-' . $row['id'];
                                         ?>
                                             <tr class="align-middle">
                                                 <td>
@@ -254,14 +291,16 @@ $pid = 'product';
                                 </table>
                             <?php
                             }
-
+                            $serid = "";
                             $sql = "SELECT 
                                         *
                                     FROM services 
-                                    WHERE user_id = $user[id]";
+                                    WHERE user_id = $user[id]
+                                    AND `order_id` IS NULL";
                             $servicesBookingResult = mysqli_query($conn, $sql);
                             $servicesBookingCount = mysqli_num_rows($servicesBookingResult);
                             if ($servicesBookingCount > 0) {
+                            $serid = 'service';
                             ?>
                                 <table class="table table-striped table-responsive">
                                     <thead>
@@ -278,7 +317,7 @@ $pid = 'product';
                                         <?php
                                         while ($row = mysqli_fetch_assoc($servicesBookingResult)) {
                                             $subtotal += $row['price'];
-                                            $pid .= '-' . $row['id'];
+                                            $serid .= '-' . $row['id'];
                                         ?>
                                             <tr class="align-middle">
                                                 <td><?php echo $row['pet_name']; ?></td>
@@ -343,6 +382,7 @@ $pid = 'product';
                     </div>
                     <?php
                     if ($subtotal > 0) {
+                        $pid = $petid . '_' . $proid . '_' . $serid;
                     ?>
                         <div class="row gy-3">
                             <div class="col-md-12">

@@ -134,9 +134,11 @@ $sql = "CREATE TABLE IF NOT EXISTS services (
     `service` VARCHAR(30) NOT NULL,
     `pet_size` VARCHAR(30) NOT NULL,
     `price` DECIMAL(8, 2),
+    `order_id` INT(6) UNSIGNED NULL DEFAULT NULL,
     `booked_for` TIMESTAMP NULL DEFAULT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (`user_id`) REFERENCES users(`id`)
+    FOREIGN KEY (`user_id`) REFERENCES users(`id`),
+    FOREIGN KEY (`order_id`) REFERENCES orders(`id`) ON DELETE SET NULL
     )";
 
 if (!mysqli_query($conn, $sql)) {
