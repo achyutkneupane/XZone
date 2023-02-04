@@ -17,10 +17,11 @@ $sql = "SELECT
         AND
         (
             p.name LIKE '%$searchTerm%'
+            OR p.description LIKE '%$searchTerm%'
             OR p.user_id IN (SELECT id FROM users WHERE name LIKE '%$searchTerm%')
             OR p.user_id IN (SELECT user_id FROM vendors WHERE name LIKE '%$searchTerm%')
             OR p.user_id IN (SELECT user_id FROM vendors WHERE address LIKE '%$searchTerm%')
-            OR category_id IN (SELECT id FROM categories WHERE name LIKE '%$searchTerm%')
+            OR category_id IN (SELECT id FROM categories WHERE name LIKE '%$searchTerm%' OR description LIKE '%$searchTerm%')
         )
         ";
 $pets = mysqli_query($conn, $sql);
