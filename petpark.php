@@ -1,7 +1,7 @@
 <title>XZone</title>
 <?php
 include 'header.php';
-$parkCount = 0;
+$parkCount = "";
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['address'])) {
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
     </div>
     <?php
-    if ($parkCount > 0) {
+    if ($parkCount != "" && $parkCount > 0) {
     ?>
         <div class="row mb-4 justify-content-center">
             <div class="col-md-7">
@@ -42,9 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     Search Result for <strong><?php echo $address; ?></strong>
                 </div>
                 <div class="row">
-                <?php
-                while($row = mysqli_fetch_assoc($result)) {
-                    echo "
+                    <?php
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "
                     <div class='col-md-4 border p-2 rounded'>
                         <h3 class='text-success'>{$row['name']}</h3>
                         <img src='{$row['image']}' class='img-fluid' />
@@ -52,22 +52,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <p>Map link: <a href='https://www.google.com/maps/search/?api=1&query={$row['latitude']},{$row['longitude']}' target='_blank'>{$row['latitude']},{$row['longitude']}</a></p>
                     </div>
                     ";
-                }
-                ?>
+                    }
+                    ?>
                 </div>
             </div>
         </div>
     <?php
     } else {
-        echo "
-        <div class='row mb-4 justify-content-center'>
-            <div class='col-md-7'>
-                <div class='alert alert-danger'>
-                    No result found for <strong>{$address}</strong>
+        if ($parkCount != "") {
+            echo "
+            <div class='row mb-4 justify-content-center'>
+                <div class='col-md-7'>
+                    <div class='alert alert-danger'>
+                        No result found for <strong>{$address}</strong>
+                    </div>
                 </div>
             </div>
-        </div>
-        ";
+            ";
+        }
     }
     ?>
 </div>
