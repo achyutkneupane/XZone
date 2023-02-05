@@ -154,7 +154,7 @@ $rating = $rating['rating'] ? round($rating['rating'], 1, PHP_ROUND_HALF_DOWN) :
             <form action="bookings.php?action=book&pet=<?php echo $pet['pet_id']; ?>" method="POST">
                 <div class="input-group mb-3">
                     <span class="input-group-text bg-success text-white" id="basic-addon1">Quantity</span>
-                    <input type="number" class="form-control" placeholder="1" aria-label="Quantity" aria-describedby="basic-addon1" min="0" name="quantity">
+                    <input type="number" class="form-control" placeholder="Enter Quantity" aria-label="Quantity" aria-describedby="basic-addon1" min="0" name="quantity" required>
                 </div>
                 <input type="submit" class="btn btn-success booking-button" value="Book">
             </form>

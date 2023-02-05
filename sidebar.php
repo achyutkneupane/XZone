@@ -79,6 +79,16 @@
         Add Pet
     </a>
 
+    <!-- My Pets -->
+    <a href="/dashboard/my-pets.php" class="list-group-item list-group-item-action
+    <?php if ($route == 'my-pets.php') {
+        echo 'list-group-item-success active';
+    } ?>" <?php if ($route == 'my-pets.php') {
+                echo 'aria-current="true"';
+            } ?>>
+        My Pets
+    </a>
+
     <!-- add product -->
     <a href="/dashboard/add-product.php" class="list-group-item list-group-item-action
     <?php if ($route == 'add-product.php') {

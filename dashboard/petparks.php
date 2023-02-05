@@ -1,6 +1,18 @@
 <title>Pet Parks</title>
 <?php
 include '../header.php';
+
+if(isset($_POST['delete'])) {
+    $id = $_POST['id'];
+
+    $sql = "DELETE FROM petpark WHERE id = $id";
+    $result = mysqli_query($conn, $sql);
+    if($result) {
+        $_SESSION['success'] = 'Pet Park deleted successfully!';
+    } else {
+        $_SESSION['error'] = 'Something went wrong!';
+    }
+}
 ?>
 <div class="container mt-3">
     <div class="row gy-3">
@@ -36,6 +48,7 @@ include '../header.php';
                                 <th scope="col">Location</th>
                                 <th scope="col">Latitude</th>
                                 <th scope="col">Longitude</th>
+                                <th scope="col">Delete</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -47,6 +60,12 @@ include '../header.php';
                                     <td>{$row['location']}</td>
                                     <td>{$row['latitude']}</td>
                                     <td>{$row['longitude']}</td>
+                                    <td>
+                                        <form action='petparks.php' method='post'>
+                                            <input type='hidden' name='id' value='{$row['id']}'>
+                                            <input type='submit' class='btn btn-danger' name='delete' value='Delete'>
+                                        </form>
+                                    </td>
                                 </tr>";
                             }
                             ?>

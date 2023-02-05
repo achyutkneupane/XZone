@@ -207,6 +207,7 @@ $pid = "";
                                             <th>Quantity</th>
                                             <th>Unit Price</th>
                                             <th>Total Price</th>
+                                            <th>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -224,6 +225,13 @@ $pid = "";
                                                 <td><?php echo $row['quantity']; ?></td>
                                                 <td>NRs. <?php echo $row['unit_price']; ?></td>
                                                 <td>NRs. <?php echo $row['total_price']; ?></td>
+                                                <td>
+                                                    <form action="delete.php" method="POST">
+                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                                        <input type="hidden" name="table" value="bookings">
+                                                        <button type="submit" class="btn btn-danger btn-sm" name="delete">Delete</button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                         <?php
                                         }
@@ -260,6 +268,7 @@ $pid = "";
                                             <th>Quantity</th>
                                             <th>Unit Price</th>
                                             <th>Total Price</th>
+                                            <th>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -277,6 +286,13 @@ $pid = "";
                                                 <td><?php echo $row['quantity']; ?></td>
                                                 <td>NRs. <?php echo $row['unit_price']; ?></td>
                                                 <td>NRs. <?php echo $row['total_price']; ?></td>
+                                                <td>
+                                                    <form action="delete.php" method="POST">
+                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                                        <input type="hidden" name="table" value="product_bookings">
+                                                        <button type="submit" class="btn btn-danger btn-sm" name="delete">Delete</button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                         <?php
                                         }
@@ -306,6 +322,7 @@ $pid = "";
                                             <th>Booked For</th>
                                             <th>Booked At</th>
                                             <th>Price</th>
+                                            <th>Delete</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -321,6 +338,13 @@ $pid = "";
                                                 <td><?php echo date('d M Y H:i', strtotime($row['booked_for'])); ?></td>
                                                 <td><?php echo date('d M Y H:i', strtotime($row['created_at'])); ?></td>
                                                 <td>NRs. <?php echo $row['price']; ?></td>
+                                                <td>
+                                                    <form action="delete.php" method="POST">
+                                                        <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                                                        <input type="hidden" name="table" value="services">
+                                                        <button type="submit" class="btn btn-danger btn-sm" name="delete">Delete</button>
+                                                    </form>
+                                                </td>
                                             </tr>
                                         <?php
                                         }
