@@ -1,5 +1,5 @@
 <?php
-// error_reporting(0);
+error_reporting(0);
 
 include 'db.php';
 include 'auth.php';
